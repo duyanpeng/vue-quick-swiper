@@ -88,17 +88,17 @@ export default {
         this.index = this.imgNum
       }
 
-      if(this.index === this.imgNum + 2){
+      if(this.index === this.imgNum + 1){
         this.index = 1;
         
         const width = this.$el.getBoundingClientRect().width;
 
-        this.$refs.container.style[
-        "-webkit-transform"
-      ] = `translate3d(${-width * this.index}px,0,0)`;
-      this.$refs.container.style["transform"] = `translate3d(${-width * this.index}px,0,0)`;
+      //   this.$refs.container.style[
+      //   "-webkit-transform"
+      // ] = `translate3d(${-width * this.index}px,0,0)`;
+      // this.$refs.container.style["transform"] = `translate3d(${-width * this.index}px,0,0)`;
       
-      return
+      // return
       }   
       this.$refs.container.style[
         "-webkit-transform"
@@ -131,10 +131,8 @@ export default {
     // 自动轮播
     autoMove(){
       this.timer = setInterval(()=>{
-        this.$refs.container.style["-webkit-transition"] = null;
-      this.$refs.container.style["transition"] = null;
-       this.index = this.index+1
-       this.handleEnd()  
+     //  this.index = this.index+1
+      // this.handleEnd()  
       },1500)
     }
   }
