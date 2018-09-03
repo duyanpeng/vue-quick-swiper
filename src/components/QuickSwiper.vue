@@ -18,6 +18,7 @@ export default {
       startX: 0,
       endX: 0,
       imgNum: 0,    // 图片数
+      space:1500
     };
   },
 
@@ -54,6 +55,16 @@ export default {
       this.startX = screenX;
       this.$refs.container.style["-webkit-transition"] = null;
       this.$refs.container.style["transition"] = null;
+      if(this.index === 0){
+        this.index = this.imgNum
+      }
+
+      if(this.index === this.imgNum + 1){
+        this.index = 1;
+        
+        const width = this.$el.getBoundingClientRect().width;
+
+      }  
     },
     // 触摸中
     onTouchMove(e) {
@@ -82,24 +93,18 @@ export default {
     },
     // 控制移动
     handleMove(dis) {
-      console.log(this.index)
-
-      if(this.index === 0){
-        this.index = this.imgNum
-      }
-
-      if(this.index === this.imgNum + 1){
-        this.index = 1;
-        
-        const width = this.$el.getBoundingClientRect().width;
-
-      //   this.$refs.container.style[
-      //   "-webkit-transform"
-      // ] = `translate3d(${-width * this.index}px,0,0)`;
-      // this.$refs.container.style["transform"] = `translate3d(${-width * this.index}px,0,0)`;
       
-      // return
-      }   
+
+      // if(this.index === 0){
+      //   this.index = this.imgNum
+      // }
+
+      // if(this.index === this.imgNum + 1){
+      //   this.index = 1;
+        
+      //   const width = this.$el.getBoundingClientRect().width;
+
+      // }   
       this.$refs.container.style[
         "-webkit-transform"
       ] = `translate3d(${dis}px,0,0)`;
@@ -130,10 +135,29 @@ export default {
     },
     // 自动轮播
     autoMove(){
+      const width = this.$el.getBoundingClientRect().width;
+      
       this.timer = setInterval(()=>{
-     //  this.index = this.index+1
-      // this.handleEnd()  
-      },1500)
+       
+        this.$refs.container.style["-webkit-transition"] = null;
+        this.$refs.container.style["transition"] = null;
+      if(this.index === this.imgNum + 1){
+        console.log(22222)
+        this.index = 1;
+        this.$refs.container.style[
+        "-webkit-transform"
+      ] = `translate3d(${-width}px,0,0)`;
+      this.$refs.container.style["transform"] = `translate3d(${-width}px,0,0)`;
+      this.space = 0
+      }else{
+        this.space = 1500
+        this.index = this.index+1
+        this.$refs.container.style["-webkit-transition"] = `all .2s`;
+        this.$refs.container.style["transition"] = `all .2s`;
+        this.handleMove(-width * this.index); 
+      }
+       
+      },this.space)
     }
   }
 };
