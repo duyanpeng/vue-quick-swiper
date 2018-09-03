@@ -14,9 +14,10 @@
 export default {
   data() {
     return {
-      index: 0,
+      index: 1,
       startX: 0,
-      endX: 0
+      endX: 0,
+      imgNum: 0,    // 图片数
     };
   },
 
@@ -27,6 +28,8 @@ export default {
   mounted() {
     this.bindEvent();
     this.insertNode();
+    this.initPosition();
+    this.autoMove();
   },
   methods: {
     bindEvent() {
@@ -36,6 +39,9 @@ export default {
           this.$el.addEventListener("touchstart", this.onTouchStart);
           this.$el.addEventListener("touchmove", this.onTouchMove);
           this.$el.addEventListener("touchend", this.onTouchEnd);
+          this.$el.addEventListener("webkitAnimationEnd",()=>{
+            console.log('gggg')
+          })
         } else {
           console.log("不支持");
         }
@@ -46,8 +52,8 @@ export default {
       const screenX = e.touches[0].screenX;
       // 记录初始位置
       this.startX = screenX;
-      this.$refs.container.style["-webkit-transition"] = `all 0s`;
-      this.$refs.container.style["transition"] = `all 0s`;
+      this.$refs.container.style["-webkit-transition"] = null;
+      this.$refs.container.style["transition"] = null;
     },
     // 触摸中
     onTouchMove(e) {
@@ -72,11 +78,28 @@ export default {
         }
       }
       this.endX = 0;
-      console.log(this.index);
       this.handleEnd();
     },
     // 控制移动
     handleMove(dis) {
+      console.log(this.index)
+
+      if(this.index === 0){
+        this.index = this.imgNum
+      }
+
+      if(this.index === this.imgNum + 2){
+        this.index = 1;
+        
+        const width = this.$el.getBoundingClientRect().width;
+
+        this.$refs.container.style[
+        "-webkit-transform"
+      ] = `translate3d(${-width * this.index}px,0,0)`;
+      this.$refs.container.style["transform"] = `translate3d(${-width * this.index}px,0,0)`;
+      
+      return
+      }   
       this.$refs.container.style[
         "-webkit-transform"
       ] = `translate3d(${dis}px,0,0)`;
@@ -93,11 +116,26 @@ export default {
     insertNode() {
       this.$nextTick(() => {
         const container = this.$refs.container.children;
+        this.imgNum = container.length
         const firstNode = container[0].cloneNode(true);
         const lastNode = container[container.length - 1].cloneNode(true);
         this.$refs.container.insertBefore(lastNode, container[0]);
         this.$refs.container.appendChild(firstNode);
       });
+    },
+    // 初始化轮播图位置
+    initPosition(){
+      const width = this.$el.getBoundingClientRect().width;
+      this.handleMove(-width * 1);
+    },
+    // 自动轮播
+    autoMove(){
+      this.timer = setInterval(()=>{
+        this.$refs.container.style["-webkit-transition"] = null;
+      this.$refs.container.style["transition"] = null;
+       this.index = this.index+1
+       this.handleEnd()  
+      },1500)
     }
   }
 };
@@ -115,6 +153,6 @@ export default {
   flex-shrink: 0;
   width: 100%;
   height: 200px;
-  background: green;
+  background: lightgreen;
 }
 </style>
