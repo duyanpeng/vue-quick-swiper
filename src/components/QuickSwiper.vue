@@ -1,15 +1,15 @@
 
 <template>
-  <div>
-    <div class="vq-swiper">
+    <div class="vq-swiper" v-cloak>
       <div class="vq-swiper-container" ref="container">
         <slot></slot>
       </div>
+      <slot name="dots">
       <div class="vq-swiper-dots">
         <div class="vq-swiper-dot" v-for="(item,index) in imgNum" :class="{'vq-swiper-select':selectIndex == index}" :key="index"></div>
       </div>
+      </slot>
     </div>
-  </div>
 </template>
 
 <script>
@@ -34,15 +34,12 @@ export default {
     index(newData,oldData){
       if(newData > this.imgNum){
         this.selectIndex = 0
-        console.log(0)
       }else if(newData === 0){
         this.selectIndex = this.imgNum - 1
-        console.log(this.imgNum - 1)
       }else if(newData === 1){
         
       }else{
         this.selectIndex = newData - 1
-        console.log(newData - 1)
       }
       
     }
@@ -69,6 +66,7 @@ export default {
     // 触摸开始
     onTouchStart(e) {
       this.stopAuto = true
+      console.log(this.stopAuto)
       const screenX = e.touches[0].screenX;
       // 记录初始位置
       this.startX = screenX;
@@ -85,6 +83,7 @@ export default {
     },
     // 触摸中
     onTouchMove(e) {
+      this.stopAuto = true
       const screenX = e.touches[0].screenX;
       const width = this.$el.getBoundingClientRect().width;
       // 记录移动结束位置
@@ -93,6 +92,9 @@ export default {
     },
     // 触摸结束
     onTouchEnd() {
+      this.stopAuto = false
+       clearTimeout(this.timer)
+       this.autoMove()
       // 轮播图宽
       const width = this.$el.getBoundingClientRect().width;
       // 移动距离
@@ -109,8 +111,7 @@ export default {
       this.handleEnd();
     },
     // 控制移动
-    handleMove(dis) {
-      this.stopAuto = false  
+    handleMove(dis) { 
       this.$refs.container.style[
         "-webkit-transform"
       ] = `translate3d(${dis}px,0,0)`;
@@ -142,9 +143,12 @@ export default {
     // 自动轮播
     autoMove(){
       if( this.stopAuto){
-        return
+        return false
       }
       this.timer = setTimeout(()=>{
+        if( this.stopAuto){
+         return false
+      }
         const width = this.$el.getBoundingClientRect().width;
         this.$refs.container.style["-webkit-transition"] = null;
         this.$refs.container.style["transition"] = null;
@@ -170,6 +174,9 @@ export default {
 };
 </script>
 <style scoped>
+[v-cloak]{
+  display: none;
+}
 .vq-swiper {
   position: relative;
   width: 100%;
