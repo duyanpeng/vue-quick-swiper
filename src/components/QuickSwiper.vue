@@ -5,7 +5,9 @@
       <div class="vq-swiper-container" ref="container">
         <slot></slot>
       </div>
-      <div class="vq-swiper-dots"></div>
+      <div class="vq-swiper-dots">
+        <div class="vq-swiper-dot" v-for="(item,index) in imgNum" :class="{'vq-swiper-select':selectIndex == index}" :key="index"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -16,17 +18,35 @@ export default {
     return {
       index: 1,
       startX: 0,
+      selectIndex:0,
       endX: 0,
       imgNum: 0,    // 图片数
       space:1500,
-      stopAuto:false,
+      timer:{}, //定时器
+      stopAuto:false,  // 自动轮播开关
     };
   },
 
   components: {},
 
   computed: {},
-
+  watch:{
+    index(newData,oldData){
+      if(newData > this.imgNum){
+        this.selectIndex = 0
+        console.log(0)
+      }else if(newData === 0){
+        this.selectIndex = this.imgNum - 1
+        console.log(this.imgNum - 1)
+      }else if(newData === 1){
+        
+      }else{
+        this.selectIndex = newData - 1
+        console.log(newData - 1)
+      }
+      
+    }
+  },
   mounted() {
     this.bindEvent();
     this.insertNode();
@@ -41,9 +61,6 @@ export default {
           this.$el.addEventListener("touchstart", this.onTouchStart);
           this.$el.addEventListener("touchmove", this.onTouchMove);
           this.$el.addEventListener("touchend", this.onTouchEnd);
-          this.$el.addEventListener("webkitAnimationEnd",()=>{
-            console.log('gggg')
-          })
         } else {
           console.log("不支持");
         }
@@ -57,15 +74,13 @@ export default {
       this.startX = screenX;
       this.$refs.container.style["-webkit-transition"] = null;
       this.$refs.container.style["transition"] = null;
+      // 边界条件
       if(this.index === 0){
         this.index = this.imgNum
       }
 
       if(this.index === this.imgNum + 1){
-        this.index = 1;
-        
-        const width = this.$el.getBoundingClientRect().width;
-
+        this.index = 1;        
       }  
     },
     // 触摸中
@@ -95,18 +110,7 @@ export default {
     },
     // 控制移动
     handleMove(dis) {
-      this.stopAuto = false
-
-      // if(this.index === 0){
-      //   this.index = this.imgNum
-      // }
-
-      // if(this.index === this.imgNum + 1){
-      //   this.index = 1;
-        
-      //   const width = this.$el.getBoundingClientRect().width;
-
-      // }   
+      this.stopAuto = false  
       this.$refs.container.style[
         "-webkit-transform"
       ] = `translate3d(${dis}px,0,0)`;
@@ -141,7 +145,7 @@ export default {
         return
       }
       this.timer = setTimeout(()=>{
-       const width = this.$el.getBoundingClientRect().width;
+        const width = this.$el.getBoundingClientRect().width;
         this.$refs.container.style["-webkit-transition"] = null;
         this.$refs.container.style["transition"] = null;
       if(this.index === this.imgNum + 1){
@@ -160,7 +164,6 @@ export default {
         this.handleMove(-width * this.index); 
         this.autoMove()
       }
-       
       },this.space)
     }
   }
@@ -168,11 +171,11 @@ export default {
 </script>
 <style scoped>
 .vq-swiper {
+  position: relative;
   width: 100%;
   overflow: hidden;
 }
 .vq-swiper-container {
-  /* transform: translate(-375px); */
   display: flex;
 }
 .vq-swiper-item {
@@ -180,5 +183,23 @@ export default {
   width: 100%;
   height: 200px;
   background: lightgreen;
+}
+.vq-swiper-dots{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform: translate(-50%);
+  display: flex;
+  height:6px;
+}
+.vq-swiper-dot{
+  margin: 0 5px;
+  width:6px;
+  height:6px;
+  border-radius: 3px;
+  background: #d0cdd1;
+}
+.vq-swiper-select{
+  background: #53b2fd;
 }
 </style>
