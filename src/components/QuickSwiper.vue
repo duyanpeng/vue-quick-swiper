@@ -178,12 +178,7 @@ export default {
 .vq-swiper-container {
   display: flex;
 }
-.vq-swiper-item {
-  flex-shrink: 0;
-  width: 100%;
-  height: 200px;
-  background: lightgreen;
-}
+
 .vq-swiper-dots{
   position:absolute;
   bottom:20px;
