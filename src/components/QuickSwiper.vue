@@ -14,6 +14,18 @@
 
 <script>
 export default {
+  props:{
+    space:{
+      default:3000
+    },
+    getIndex:{
+      default:function(){
+        return function(){
+
+        }
+      }
+    }
+  },
   data() {
     return {
       index: 1,
@@ -21,7 +33,6 @@ export default {
       selectIndex:0,
       endX: 0,
       imgNum: 0,    // 图片数
-      space:1500,
       timer:{}, //定时器
       stopAuto:false,  // 自动轮播开关
     };
@@ -34,12 +45,15 @@ export default {
     index(newData,oldData){
       if(newData > this.imgNum){
         this.selectIndex = 0
+        this.getIndex(this.selectIndex)
       }else if(newData === 0){
         this.selectIndex = this.imgNum - 1
+        this.getIndex(this.selectIndex)
       }else if(newData === 1){
         
       }else{
         this.selectIndex = newData - 1
+        this.getIndex(this.selectIndex)
       }
       
     }
@@ -66,7 +80,6 @@ export default {
     // 触摸开始
     onTouchStart(e) {
       this.stopAuto = true
-      console.log(this.stopAuto)
       const screenX = e.touches[0].screenX;
       // 记录初始位置
       this.startX = screenX;

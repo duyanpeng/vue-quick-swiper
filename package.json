@@ -1,6 +1,6 @@
 {
   "name": "vue-quick-swiper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "基于vue的移动端轮播图",
   "main": "dist/main.js",
   "module": "src/index.js",
